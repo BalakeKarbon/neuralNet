@@ -77,6 +77,7 @@ class FFANN { //Feed Forward ANN.
 	}
 	public double train(double inputs[], double correctOutputs[], double learningRate) {
 		double newWeights[] = new double[weights.length];
+		double neuronErrors[] = new double[neurons.length];
 		double passOutput[] = new double[structure[structure.length-1]];
 		double totalError = 0;
 		if(inputs.length == structure[0] && correctOutputs.length == structure[structure.length-1]) {
@@ -97,11 +98,21 @@ class FFANN { //Feed Forward ANN.
 			int currentNeuronInLayer;
 			int currentWeightForNeuron;
 			int currentNeuronInAboveLayer;
+			int currentNeuronOffsetInAboveLayer;
+			int connectingWeight;
+			int weightInput;
+			double eTotal;
 			for(currentLayer = (structure.length-1);currentLayer>=1;currentLayer--) {
 				weightOffset-=(structure[currentLayer]*structure[currentLayer-1]);
 				neuronOffset-=structure[currentLayer];
 				for(currentNeuronInLayer = (structure[currentLayer]-1);currentNeuronInLayer>=0;currentNeuronInLayer--) {
 					currentNeuron = neuronOffset + currentNeuronInLayer;
+					if(currentLayer == (structure.length-1)) {
+						//neuronErrors[currentNeuron] = ((-1*(correctOutputs[(neurons.length-1)-currentNeuron]-neurons[currentNeuron]))*(neurons[currentNeuron]*(1-neurons[currentNeuron])));
+						neuronErrors[currentNeuron] = ((-1*(correctOutputs[currentNeuronInLayer]-neurons[currentNeuron]))*(neurons[currentNeuron]*(1-neurons[currentNeuron])));
+					} else { 
+						//neuronErrors[currentNeuron] = ((neurons)*())
+					}
 					for(currentWeightForNeuron = (structure[currentLayer-1]-1);currentWeightForNeuron>=0;currentWeightForNeuron--) {
 						currentWeight = weightOffset + currentNeuronInLayer + (currentWeightForNeuron*structure[currentLayer]);
 						if(currentLayer == (structure.length-1)) {
@@ -110,9 +121,19 @@ class FFANN { //Feed Forward ANN.
 						} else {
 							//Hidden Layer
 							currentDelta = 0;
-							for(currentNeuronInAboveLayer = 0;currentNeuronInAboveLayer<structure[currentLayer+1];currentNeuronInAboveLayer++) {
-								//currentDelta+=();//HERE!!!!
+							eTotal = 0;
+							for(currentNeuronOffsetInAboveLayer = 0;currentNeuronOffsetInAboveLayer<structure[currentLayer+1];currentNeuronOffsetInAboveLayer++) {
+								currentNeuronInAboveLayer = (currentNeuronOffsetInAboveLayer+(neurons.length-structure[currentLayer+1]));
+								connectingWeight = ((weights.length-(structure[currentLayer+1]*structure[currentLayer]))+(currentNeuronOffsetInAboveLayer*structure[currentLayer]));
+								eTotal+=(weights[connectingWeight]*neuronErrors[currentNeuronInAboveLayer]);
 							}
+							//if((currentLayer-1) < 0) {
+								//neuronErrors[currentNeuron] = (neurons[currentNeuron]*(1-neurons[currentNeuron]))*(inputs[currentWeightForNeuron]);
+							//} else {
+								weightInput = currentWeightForNeuron+(currentNeuron-currentNeuronInLayer);
+								neuronErrors[currentNeuron] = (neurons[currentNeuron]*(1-neurons[currentNeuron]))*(neurons[weightInput]);
+							//}
+							currentDelta = eTotal*neuronErrors[currentNeuron];//HERE
 						}
 					}
 				}
@@ -211,6 +232,7 @@ class neuralNet {
 				annInputs[1] = 1.f;
 				annDesiredOutputs[0] = 0.f;
 				mahANN.train(annInputs,annDesiredOutputs,mahLearningConstant);
+				//TO-DO: Print total error?
 			}
 		} else {
 			mahANN = null;
