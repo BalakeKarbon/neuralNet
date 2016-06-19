@@ -133,14 +133,14 @@ class FFANN { //Feed Forward ANN.
 								weightInput = currentWeightForNeuron+(currentNeuron-currentNeuronInLayer);
 								neuronErrors[currentNeuron] = (neurons[currentNeuron]*(1-neurons[currentNeuron]))*(neurons[weightInput]);
 							//}
-							currentDelta = eTotal*neuronErrors[currentNeuron];//HERE
+							currentDelta = eTotal*neuronErrors[currentNeuron];
+							newWeights[currentWeight] = weights[currentWeight]-(learningRate*currentDelta);
 						}
 					}
 				}
 			}
-			//TO-DO: Back-Propagation continued!
 		}
-		//NOTE: Return new weights. Maybe make a new function to return total error.
+		weights = newWeights;
 		return totalError;
 	}
 	public boolean isInitializedCorrectly() {
@@ -212,27 +212,42 @@ class neuralNet {
 		//Make sure the nerual network initialized without any errors.
 		if(mahANN.isInitializedCorrectly()) {
 			System.out.println("\nThe ANN initialized correctly!");
-			double mahLearningConstant = 0.1;
+			double mahLearningConstant = 1;
 			double annInputs[] = new double[2];
 			double annDesiredOutputs[] = new double[1];
-			for(int mahCurrentPass = 0;mahCurrentPass<1;mahCurrentPass++) {
+			double mahTotalError = 1;
+			long mahTrains = 0;
+			while(mahTotalError>0.01) {
+				mahTrains++;
+				mahTotalError = 0;
 				annInputs[0] = 0.f;
 				annInputs[1] = 0.f;
 				annDesiredOutputs[0] = 1.f;
-				mahANN.train(annInputs,annDesiredOutputs,mahLearningConstant);
+				mahTotalError+=mahANN.train(annInputs,annDesiredOutputs,mahLearningConstant);
 				annInputs[0] = 1.f;
 				annInputs[1] = 0.f;
 				annDesiredOutputs[0] = 1.f;
-				mahANN.train(annInputs,annDesiredOutputs,mahLearningConstant);
+				mahTotalError+=mahANN.train(annInputs,annDesiredOutputs,mahLearningConstant);
 				annInputs[0] = 0.f;
 				annInputs[1] = 1.f;
 				annDesiredOutputs[0] = 1.f;
-				mahANN.train(annInputs,annDesiredOutputs,mahLearningConstant);
+				mahTotalError+=mahANN.train(annInputs,annDesiredOutputs,mahLearningConstant);
 				annInputs[0] = 1.f;
 				annInputs[1] = 1.f;
 				annDesiredOutputs[0] = 0.f;
-				mahANN.train(annInputs,annDesiredOutputs,mahLearningConstant);
-				//TO-DO: Print total error?
+				mahTotalError+=mahANN.train(annInputs,annDesiredOutputs,mahLearningConstant);
+				mahTotalError=mahTotalError/4;
+				//System.out.println(mahTotalError);
+				/*System.out.println("New Weights:");
+				for(int mahCurWeight = 0;mahCurWeight<mahANN.getWeights().length;mahCurWeight++) {
+					System.out.println(" w"+mahCurWeight+": "+mahANN.getWeights()[mahCurWeight]);
+				}*/
+			}
+			System.out.println(mahTrains);
+			System.out.println(mahTotalError);
+			System.out.println("New Weights:");
+			for(int mahCurWeight = 0;mahCurWeight<mahANN.getWeights().length;mahCurWeight++) {
+				System.out.println(" w"+mahCurWeight+": "+mahANN.getWeights()[mahCurWeight]);
 			}
 		} else {
 			mahANN = null;
