@@ -226,6 +226,7 @@ class neuralNet {
 			long startTime = currentTime;
 			double lastError = 1;
 			double requiredError = 0.01;
+			System.out.println("Starting training for NAND gate...");
 			while(mahTotalError>requiredError) {
 				mahTrains++;
 				mahTotalError = 0;
@@ -268,6 +269,22 @@ class neuralNet {
 			System.out.println(" Improvement: " + (lastError-mahTotalError));
 			long totalElapsedTime = (System.currentTimeMillis()-startTime);
 			System.out.println("Total elapsed time: " + totalElapsedTime + " milliseconds.");
+			double output[];
+			double inputs[] = {0.f,0.f};
+			output = mahANN.forwardPass(inputs);
+			System.out.println("In: 0,0 Out: " + Math.round(output[0]));
+			inputs[0] = 0.f;
+			inputs[1] = 1.f;
+			output = mahANN.forwardPass(inputs);
+			System.out.println("In: 0,1 Out: " + Math.round(output[0]));
+			inputs[0] = 1.f;
+			inputs[1] = 0.f;
+			output = mahANN.forwardPass(inputs);
+			System.out.println("In: 1,0 Out: " + Math.round(output[0]));
+			inputs[0] = 1.f;
+			inputs[1] = 1.f;
+			output = mahANN.forwardPass(inputs);
+			System.out.println("In: 1,1 Out: " + Math.round(output[0]));
 		} else {
 			mahANN = null;
 			System.gc(); //Call the garbage collector.
