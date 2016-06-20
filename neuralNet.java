@@ -176,6 +176,9 @@ class FFANN { //Feed Forward ANN.
 
 class neuralNet {
 	public static void main(String args[]) {
+		
+		//OLD CODE:
+		/*
 		Random random = new Random();
 		//Generate and output nerual network structure.
 		//Structure:
@@ -226,13 +229,13 @@ class neuralNet {
 			long startTime = currentTime;
 			double lastError = 1;
 			double requiredError = 0.01;
-			System.out.println("Starting training for NAND gate...");
+			System.out.println("Starting training for XOR gate...");
 			while(mahTotalError>requiredError) {
 				mahTrains++;
 				mahTotalError = 0;
 				annInputs[0] = 0.f;
 				annInputs[1] = 0.f;
-				annDesiredOutputs[0] = 1.f;
+				annDesiredOutputs[0] = 0.f;
 				mahTotalError+=mahANN.train(annInputs,annDesiredOutputs,mahLearningConstant);
 				annInputs[0] = 1.f;
 				annInputs[1] = 0.f;
@@ -289,6 +292,7 @@ class neuralNet {
 			mahANN = null;
 			System.gc(); //Call the garbage collector.
 			System.out.println("The ANN did not initialize correctly... Make sure to check that there are enough nodes to support an ANN and that there is a bias set for each hidden and output layer.");
-		}
+		} 
+		*/
 	}
 }
