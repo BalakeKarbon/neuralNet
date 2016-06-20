@@ -189,12 +189,11 @@ class ANNTools {
 		for(int currentInitialWeight = 0;currentInitialWeight<initialWeights.length;currentInitialWeight++) {
 			initialWeights[currentInitialWeight] = (double)((random.nextDouble() * maxWeight)+minWeight);
 		}
-		double biasValues[] = new double[structure.length];
-		for(int currentBias = 0;currentBias<biasValues.length;currentBias++) {
+		double biasValues[] = new double[structure.length-1];
+		for(int currentBias = 0;currentBias<(biasValues.length);currentBias++) {
 			biasValues[currentBias] = 1.f;
 		}
-		FFANN newFFANN = new FFANN(structure,biasValues,initialWeights);
-		return newFFANN;
+		return new FFANN(structure,biasValues,initialWeights);
 	}
 	public static FFANN createFFANN(int structure[]) {
 		int weightCount = 0;
@@ -208,12 +207,11 @@ class ANNTools {
 		for(int currentInitialWeight = 0;currentInitialWeight<initialWeights.length;currentInitialWeight++) {
 			initialWeights[currentInitialWeight] = (double)((random.nextDouble() * 1.0)+0.0);
 		}
-		double biasValues[] = new double[structure.length];
-		for(int currentBias = 0;currentBias<biasValues.length;currentBias++) {
+		double biasValues[] = new double[structure.length-1];
+		for(int currentBias = 0;currentBias<(biasValues.length);currentBias++) {
 			biasValues[currentBias] = 1.f;
 		}
-		FFANN newFFANN = new FFANN(structure,biasValues,initialWeights);
-		return newFFANN;
+		return new FFANN(structure,biasValues,initialWeights);
 	}
 	public static FFANN createFFANN(int structure[],double initialWeights[]) {
 		int weightCount = 0;
@@ -229,12 +227,11 @@ class ANNTools {
 				initialWeights[currentInitialWeight] = (double)((random.nextDouble() * 1.0)+0.0);
 			}
 		}
-		double biasValues[] = new double[structure.length];
-		for(int currentBias = 0;currentBias<biasValues.length;currentBias++) {
+		double biasValues[] = new double[structure.length-1];
+		for(int currentBias = 0;currentBias<(biasValues.length);currentBias++) {
 			biasValues[currentBias] = 1.f;
 		}
-		FFANN newFFANN = new FFANN(structure,biasValues,initialWeights);
-		return newFFANN;
+		return new FFANN(structure,biasValues,initialWeights);
 	}
 	public static FFANN createFFANN(int structure[],double minWeight,double maxWeight, double biasValue) {
 		maxWeight = maxWeight-minWeight;
@@ -249,12 +246,11 @@ class ANNTools {
 		for(int currentInitialWeight = 0;currentInitialWeight<initialWeights.length;currentInitialWeight++) {
 			initialWeights[currentInitialWeight] = (double)((random.nextDouble() * maxWeight)+minWeight);
 		}
-		double biasValues[] = new double[structure.length];
-		for(int currentBias = 0;currentBias<biasValues.length;currentBias++) {
+		double biasValues[] = new double[structure.length-1];
+		for(int currentBias = 0;currentBias<(biasValues.length);currentBias++) {
 			biasValues[currentBias] = biasValue;
 		}
-		FFANN newFFANN = new FFANN(structure,biasValues,initialWeights);
-		return newFFANN;
+		return new FFANN(structure,biasValues,initialWeights);
 	}
 	public static FFANN createFFANN(int structure[],double minWeight,double maxWeight, double biasValues[]) {
 		maxWeight = maxWeight-minWeight;
@@ -269,21 +265,21 @@ class ANNTools {
 		for(int currentInitialWeight = 0;currentInitialWeight<initialWeights.length;currentInitialWeight++) {
 			initialWeights[currentInitialWeight] = (double)((random.nextDouble() * maxWeight)+minWeight);
 		}
-		if(biasValues.length != structure.length) {
-			biasValues = new double[structure.length];
-			for(int currentBias = 0;currentBias<biasValues.length;currentBias++) {
+		if(biasValues.length != (structure.length-1)) {
+			biasValues = new double[structure.length-1];
+			for(int currentBias = 0;currentBias<(biasValues.length);currentBias++) {
 				biasValues[currentBias] = 1.0;
 			}
 		}
-		FFANN newFFANN = new FFANN(structure,biasValues,initialWeights);
-		return newFFANN;
+		return new FFANN(structure,biasValues,initialWeights);
 	}
 }
-
-//Demo Code Bellow:
 class learnMethod {
 	public double[] inputs;
 	public double[] outputs;
+	learnMethod() {
+		
+	}
 }
 class learnThread implements Runnable {
 	public static int threadCount;
@@ -373,27 +369,28 @@ class learnThread implements Runnable {
 class neuralNet {
 	public static void main(String args[]) {
 		Random random = new Random();
-		int structure[] = {2,5,5,1}; //Overall Structure
-		learnMethod learningMethods[] = new learnMethod[4];
-		learningMethods[0].inputs = new double[structure[0]];
-		learningMethods[0].outputs = new double[structure[3]];
+		int structure[] = {2,5,1}; //Overall Structure
+		//CURRENTLY LEARNING NAND GATE
+		learnMethod learningMethods[] = {new learnMethod(),new learnMethod(),new learnMethod(),new learnMethod()};
+		learningMethods[0].inputs = new double[2];
+		learningMethods[0].outputs = new double[1];
 		learningMethods[0].inputs[0] = 0.f;
 		learningMethods[0].inputs[1] = 0.f;
-		learningMethods[0].outputs[0] = 0.f;
-		learningMethods[1].inputs = new double[structure[0]];
-		learningMethods[1].outputs = new double[structure[3]];
+		learningMethods[0].outputs[0] = 1.f;
+		learningMethods[1].inputs = new double[2];
+		learningMethods[1].outputs = new double[1];
 		learningMethods[1].inputs[0] = 0.f;
-		learningMethods[1].inputs[1] = 0.f;
-		learningMethods[1].outputs[0] = 0.f;
-		learningMethods[2].inputs = new double[structure[0]];
-		learningMethods[2].outputs = new double[structure[3]];
-		learningMethods[2].inputs[0] = 0.f;
+		learningMethods[1].inputs[1] = 1.f;
+		learningMethods[1].outputs[0] = 1.f;
+		learningMethods[2].inputs = new double[2];
+		learningMethods[2].outputs = new double[1];
+		learningMethods[2].inputs[0] = 1.f;
 		learningMethods[2].inputs[1] = 0.f;
-		learningMethods[2].outputs[0] = 0.f;
-		learningMethods[3].inputs = new double[structure[0]];
-		learningMethods[3].outputs = new double[structure[3]];
-		learningMethods[3].inputs[0] = 0.f;
-		learningMethods[3].inputs[1] = 0.f;
+		learningMethods[2].outputs[0] = 1.f;
+		learningMethods[3].inputs = new double[2];
+		learningMethods[3].outputs = new double[1];
+		learningMethods[3].inputs[0] = 1.f;
+		learningMethods[3].inputs[1] = 1.f;
 		learningMethods[3].outputs[0] = 0.f;
 		int weightCount = 0;
 		for(int currentLayer = 0;currentLayer<structure.length;currentLayer++) {
@@ -424,6 +421,7 @@ class neuralNet {
 			if((curTime-lastTime)>=updateRate) {
 				System.out.println("Lowest Error: " + learnThread.lowestError + " Average Error: " + learnThread.averageNetworkError);
 				lastTime=curTime;
+				//System.out.println(idealNetwork.isInitializedCorrectly());
 				idealNetwork.setWeights(learnThread.lastSuccesfulWeights);
 				double outputs[];
 				String outStr = "";
