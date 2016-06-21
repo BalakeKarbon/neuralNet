@@ -1,0 +1,41 @@
+Learning NOR Gate to error at or below 0.004 with 16 parallel neural networks...
+Learned NOR Gate with error of 0.0027595588812736245 useing 16 parallel feed foreward neural networks in 1.111 seconds!
+Recycled neural networks: 4322
+Total generations: 1664800
+Ideal network structure:
+ Layers:
+  Input layer: 2 neurons
+  Hidden layer 1: 5 neurons
+  Output layer: 1 neurons
+ Bias values:
+  Bias 0: 1.0
+  Bias 1: 1.0
+ Weights:
+  Weight 0: 3.89693759067586
+  Weight 1: 3.200511552715112
+  Weight 2: 8.329009437366109
+  Weight 3: -0.9786980511011467
+  Weight 4: 9.393361910016853
+  Weight 5: 3.796602899875986
+  Weight 6: 3.110477297115253
+  Weight 7: 7.53673180308355
+  Weight 8: -1.3607632892120298
+  Weight 9: 9.637466648232483
+  Weight 10: 1.9240342348344996
+  Weight 11: 2.577798338956979
+  Weight 12: -3.652457767162797
+  Weight 13: 7.895919197398002
+  Weight 14: -7.840002026892431
+Performance:
+ Inputs: 0.0,0.0
+ Outputs: 0.8404823616958553
+ Run time: 0.0 seconds
+ Inputs: 0.0,1.0
+ Outputs: 0.05712834060730161
+ Run time: 0.0 seconds
+ Inputs: 1.0,0.0
+ Outputs: 0.11381158836294049
+ Run time: 0.0 seconds
+ Inputs: 1.0,1.0
+ Outputs: 0.012698537603965937
+ Run time: 0.0 seconds

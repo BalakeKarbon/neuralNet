@@ -1,0 +1,41 @@
+Learning AND Gate to error at or below 0.004 with 16 parallel neural networks...
+Learned AND Gate with error of 0.0016434698041583853 useing 16 parallel feed foreward neural networks in 0.762 seconds!
+Recycled neural networks: 648
+Total generations: 1751316
+Ideal network structure:
+ Layers:
+  Input layer: 2 neurons
+  Hidden layer 1: 5 neurons
+  Output layer: 1 neurons
+ Bias values:
+  Bias 0: 1.0
+  Bias 1: 1.0
+ Weights:
+  Weight 0: 0.3465857294313286
+  Weight 1: -0.336675752854037
+  Weight 2: -0.9320048569245529
+  Weight 3: 0.5652901523858734
+  Weight 4: 0.5302358087270116
+  Weight 5: -0.29899880218989977
+  Weight 6: 0.45387562441361734
+  Weight 7: -0.5494857230161597
+  Weight 8: 0.9084497205127313
+  Weight 9: 0.874648979374629
+  Weight 10: -0.5858721466244258
+  Weight 11: 0.8313563067780628
+  Weight 12: -11.110786916783306
+  Weight 13: 1.9169295379396987
+  Weight 14: 2.5121499995725807
+Performance:
+ Inputs: 0.0,0.0
+ Outputs: 0.024003573772288494
+ Run time: 0.0 seconds
+ Inputs: 0.0,1.0
+ Outputs: 0.16024847617181298
+ Run time: 0.0 seconds
+ Inputs: 1.0,0.0
+ Outputs: 0.2670156060169132
+ Run time: 0.0 seconds
+ Inputs: 1.0,1.0
+ Outputs: 0.7352742965270469
+ Run time: 0.0 seconds

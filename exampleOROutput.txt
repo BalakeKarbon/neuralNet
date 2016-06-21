@@ -1,0 +1,41 @@
+Learning OR Gate to error at or below 0.004 with 16 parallel neural networks...
+Learned OR Gate with error of 0.0037945878918768487 useing 16 parallel feed foreward neural networks in 0.596 seconds!
+Recycled neural networks: 6673
+Total generations: 60208
+Ideal network structure:
+ Layers:
+  Input layer: 2 neurons
+  Hidden layer 1: 5 neurons
+  Output layer: 1 neurons
+ Bias values:
+  Bias 0: 1.0
+  Bias 1: 1.0
+ Weights:
+  Weight 0: -0.527161552996351
+  Weight 1: -0.6634759457794253
+  Weight 2: 0.2665929254231781
+  Weight 3: -0.45459045985641405
+  Weight 4: 0.3191559709382231
+  Weight 5: 0.13366122895017885
+  Weight 6: -0.19727975300047867
+  Weight 7: 0.6845548373735094
+  Weight 8: -0.3148671846401439
+  Weight 9: 0.4057258521815237
+  Weight 10: -0.3562453142191716
+  Weight 11: -11.910496056219742
+  Weight 12: 11.736311494647994
+  Weight 13: -12.411220592714292
+  Weight 14: 9.472549457216637
+Performance:
+ Inputs: 0.0,0.0
+ Outputs: 0.1771005956784461
+ Run time: 0.0 seconds
+ Inputs: 0.0,1.0
+ Outputs: 0.8532838754030125
+ Run time: 0.0 seconds
+ Inputs: 1.0,0.0
+ Outputs: 0.9312367555968796
+ Run time: 0.0 seconds
+ Inputs: 1.0,1.0
+ Outputs: 0.9969766043500193
+ Run time: 0.0 seconds

@@ -1,0 +1,41 @@
+Learning XOR Gate to error at or below 0.004 with 16 parallel neural networks...
+Learned XOR Gate with error of 0.0032260552204439906 useing 16 parallel feed foreward neural networks in 1.277 seconds!
+Recycled neural networks: 3802
+Total generations: 2555464
+Ideal network structure:
+ Layers:
+  Input layer: 2 neurons
+  Hidden layer 1: 5 neurons
+  Output layer: 1 neurons
+ Bias values:
+  Bias 0: 1.0
+  Bias 1: 1.0
+ Weights:
+  Weight 0: -2.388763709733919
+  Weight 1: -13.036134208381817
+  Weight 2: -13.793502151786319
+  Weight 3: -13.996805593884973
+  Weight 4: -8.058368935619464
+  Weight 5: 2.903583096321822
+  Weight 6: -1.2218717520653408
+  Weight 7: -1.2021524424797412
+  Weight 8: -1.1923889700233208
+  Weight 9: 1.5843917784327575
+  Weight 10: -3.2254459919131926
+  Weight 11: -6.8302773194277195
+  Weight 12: -6.039748800165688
+  Weight 13: -4.303785716928973
+  Weight 14: 14.246238934964484
+Performance:
+ Inputs: 0.0,0.0
+ Outputs: 0.02936299806443074
+ Run time: 0.0 seconds
+ Inputs: 0.0,1.0
+ Outputs: 0.9672694434878045
+ Run time: 0.0 seconds
+ Inputs: 1.0,0.0
+ Outputs: 0.5910628779701035
+ Run time: 0.0 seconds
+ Inputs: 1.0,1.0
+ Outputs: 0.17013775107592852
+ Run time: 0.0 seconds

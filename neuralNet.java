@@ -400,13 +400,13 @@ class neuralNet {
 		double startTime = System.currentTimeMillis();
 		Random random = new Random();
 		int structure[] = {2,5,1}; //Overall Structure
-		//CURRENTLY LEARNING XOR GATE
+		//CURRENTLY LEARNING NAND GATE
 		learnMethod learningMethods[] = {new learnMethod(),new learnMethod(),new learnMethod(),new learnMethod()};
 		learningMethods[0].inputs = new double[2];
 		learningMethods[0].outputs = new double[1];
 		learningMethods[0].inputs[0] = 0.f;
 		learningMethods[0].inputs[1] = 0.f;
-		learningMethods[0].outputs[0] = 0.f;
+		learningMethods[0].outputs[0] = 1.f;
 		learningMethods[1].inputs = new double[2];
 		learningMethods[1].outputs = new double[1];
 		learningMethods[1].inputs[0] = 0.f;
@@ -443,7 +443,7 @@ class neuralNet {
 		double updateRate = 100;
 		double curTime = System.currentTimeMillis();
 		double lastTime = System.currentTimeMillis();
-		System.out.println("Learning XOR Gate to error at or below " + desiredTotalError + " with " + learnThread.threadLimit + " parallel neural networks...");
+		System.out.println("Learning NAND Gate to error at or below " + desiredTotalError + " with " + learnThread.threadLimit + " parallel neural networks...");
 		while(learnThread.threadCount<(learnThread.threadLimit+1)) {
 			//System.out.println(learnThread.threadLimit);
 			new learnThread(learningMethods,initialDesiredTotalError,desiredImprovement,improvementLimit,learningConstant,structure);
@@ -461,7 +461,7 @@ class neuralNet {
 				new learnThread(learningMethods,learnThread.averageNetworkError,desiredImprovement,improvementLimit,learningConstant,structure);
 			}
 		}
-		System.out.println("Learned XOR Gate with error of " + learnThread.lowestError + " useing " + learnThread.threadLimit + " parallel feed foreward neural networks in " + ((System.currentTimeMillis()-startTime)/1000) + " seconds!");
+		System.out.println("Learned NAND Gate with error of " + learnThread.lowestError + " useing " + learnThread.threadLimit + " parallel feed foreward neural networks in " + ((System.currentTimeMillis()-startTime)/1000) + " seconds!");
 		System.out.println("Recycled neural networks: " + learnThread.recycledThreads);
 		System.out.println("Total generations: " + learnThread.totalGenerations);
 		System.out.println("Ideal network structure:");

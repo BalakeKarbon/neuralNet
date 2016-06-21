@@ -1,0 +1,41 @@
+Learning NAND Gate to error at or below 0.004 with 16 parallel neural networks...
+Learned NAND Gate with error of 0.003431218016324497 useing 16 parallel feed foreward neural networks in 0.315 seconds!
+Recycled neural networks: 3362
+Total generations: 17960
+Ideal network structure:
+ Layers:
+  Input layer: 2 neurons
+  Hidden layer 1: 5 neurons
+  Output layer: 1 neurons
+ Bias values:
+  Bias 0: 1.0
+  Bias 1: 1.0
+ Weights:
+  Weight 0: 0.11125719068132207
+  Weight 1: 0.24296506252988076
+  Weight 2: 0.17026115024267635
+  Weight 3: 0.02142662362233519
+  Weight 4: 0.660970442319937
+  Weight 5: 0.923623459017323
+  Weight 6: 0.12503452440050544
+  Weight 7: 0.09245734830942427
+  Weight 8: 0.9479385372062499
+  Weight 9: 0.3743258152607599
+  Weight 10: 0.040885440752791075
+  Weight 11: 0.11450209629547374
+  Weight 12: 0.12757276137627277
+  Weight 13: 0.03667562651610701
+  Weight 14: 0.06337927094814819
+Performance:
+ Inputs: 0.0,0.0
+ Outputs: 0.7824508904738129
+ Run time: 0.0 seconds
+ Inputs: 0.0,1.0
+ Outputs: 0.7858900748323938
+ Run time: 0.0 seconds
+ Inputs: 1.0,0.0
+ Outputs: 0.7853656792062681
+ Run time: 0.0 seconds
+ Inputs: 1.0,1.0
+ Outputs: 0.7883664567872994
+ Run time: 0.0 seconds
