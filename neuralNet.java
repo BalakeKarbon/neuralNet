@@ -34,6 +34,9 @@ class FFANN { //Feed Forward ANN.
 			return false;
 		}
 	}
+	public double[] getBiasValues() {
+		return biasValues;
+	}
 	public double[] forwardPass(double inputs[]) { //NOTE:Each input neuron has just one input.
 		double networkOutput[] = new double[structure[structure.length-1]];
 		if(inputs.length == structure[0]) {
@@ -283,100 +286,127 @@ class learnMethod {
 }
 class learnThread implements Runnable {
 	public static int threadCount;
+	public static int threadLimit = 1;
 	public FFANN threadFFANN;
 	public double desiredError;
 	public double improvementThreshold;
 	public int underImprovementLimit;
 	public static double averageNetworkError = 1;
-	public double networkError;
+	public static double averageNetworkImprovement = 0;
+	public double networkError = 1;
 	public double lastNetworkError = 1;
 	public double networkImprovement;
 	public learnMethod learnMethods[];
 	public double learningConstant;
 	public static double lastSuccesfulWeights[];
 	public static double lowestError = 1;
+	public static int recycledThreads = 0;
+	public static int totalGenerations = 0;
+	public int threadGens = 0;
 	learnThread(learnMethod initialLearnMethods[],double initialDesiredError /* what error you are trying to reach */,double initialImprovementThreshold /* what the lowest improvement can be */,int initialUnderImprovementLimit /* how many times it cannot meet the improvmentThreshold */,double initialLearningConstant,int structure[],double minWeight,double maxWeight,double biasValues[]) {
-		threadFFANN = ANNTools.createFFANN(structure,minWeight,maxWeight,biasValues);
-		desiredError = initialDesiredError;
-		improvementThreshold = initialImprovementThreshold;
-		underImprovementLimit = initialUnderImprovementLimit;
-		learnMethods = initialLearnMethods;
-		learningConstant = initialLearningConstant;
-		threadCount++;
+		if(threadCount<(threadLimit+1)) {
+			threadFFANN = ANNTools.createFFANN(structure,minWeight,maxWeight,biasValues);
+			desiredError = initialDesiredError;
+			improvementThreshold = initialImprovementThreshold;
+			underImprovementLimit = initialUnderImprovementLimit;
+			learnMethods = initialLearnMethods;
+			learningConstant = initialLearningConstant;
+			(new Thread(this, ("neural network"))).start();
+			threadCount++;
+		}
 	}
 	learnThread(learnMethod initialLearnMethods[],double initialDesiredError /* what error you are trying to reach */,double initialImprovementThreshold /* what the lowest improvement can be */,int initialUnderImprovementLimit /* how many times it cannot meet the improvmentThreshold */,double initialLearningConstant,int structure[],double minWeight,double maxWeight,double biasValue) {
-		threadFFANN = ANNTools.createFFANN(structure,minWeight,maxWeight,biasValue);
-		desiredError = initialDesiredError;
-		improvementThreshold = initialImprovementThreshold;
-		underImprovementLimit = initialUnderImprovementLimit;
-		learnMethods = initialLearnMethods;
-		learningConstant = initialLearningConstant;
-		threadCount++;
+		if(threadCount<(threadLimit+1)) {
+			threadFFANN = ANNTools.createFFANN(structure,minWeight,maxWeight,biasValue);
+			desiredError = initialDesiredError;
+			improvementThreshold = initialImprovementThreshold;
+			underImprovementLimit = initialUnderImprovementLimit;
+			learnMethods = initialLearnMethods;
+			learningConstant = initialLearningConstant;
+			(new Thread(this, ("neural network"))).start();
+			threadCount++;
+		}
 	}
 	learnThread(learnMethod initialLearnMethods[],double initialDesiredError /* what error you are trying to reach */,double initialImprovementThreshold /* what the lowest improvement can be */,int initialUnderImprovementLimit /* how many times it cannot meet the improvmentThreshold */,double initialLearningConstant,int structure[],double minWeight,double maxWeight) {
-		threadFFANN = ANNTools.createFFANN(structure,minWeight,maxWeight);
-		desiredError = initialDesiredError;
-		improvementThreshold = initialImprovementThreshold;
-		underImprovementLimit = initialUnderImprovementLimit;
-		learnMethods = initialLearnMethods;
-		learningConstant = initialLearningConstant;
-		threadCount++;
+		if(threadCount<(threadLimit+1)) {
+			threadFFANN = ANNTools.createFFANN(structure,minWeight,maxWeight);
+			desiredError = initialDesiredError;
+			improvementThreshold = initialImprovementThreshold;
+			underImprovementLimit = initialUnderImprovementLimit;
+			learnMethods = initialLearnMethods;
+			learningConstant = initialLearningConstant;
+			(new Thread(this, ("neural network"))).start();
+			threadCount++;
+		}
 	}
 	learnThread(learnMethod initialLearnMethods[],double initialDesiredError /* what error you are trying to reach */,double initialImprovementThreshold /* what the lowest improvement can be */,int initialUnderImprovementLimit /* how many times it cannot meet the improvmentThreshold */,double initialLearningConstant,int structure[], double initialWeights[]) {
-		threadFFANN = ANNTools.createFFANN(structure,initialWeights);
-		desiredError = initialDesiredError;
-		improvementThreshold = initialImprovementThreshold;
-		underImprovementLimit = initialUnderImprovementLimit;
-		learnMethods = initialLearnMethods;
-		learningConstant = initialLearningConstant;
-		threadCount++;
+		if(threadCount<(threadLimit+1)) {
+			threadFFANN = ANNTools.createFFANN(structure,initialWeights);
+			desiredError = initialDesiredError;
+			improvementThreshold = initialImprovementThreshold;
+			underImprovementLimit = initialUnderImprovementLimit;
+			learnMethods = initialLearnMethods;
+			learningConstant = initialLearningConstant;
+			(new Thread(this, ("neural network"))).start();
+			threadCount++;
+		}
 	}
 	learnThread(learnMethod initialLearnMethods[],double initialDesiredError /* what error you are trying to reach */,double initialImprovementThreshold /* what the lowest improvement can be */,int initialUnderImprovementLimit /* how many times it cannot meet the improvmentThreshold */,double initialLearningConstant,int structure[]) {
-		threadFFANN = ANNTools.createFFANN(structure);
-		desiredError = initialDesiredError;
-		improvementThreshold = initialImprovementThreshold;
-		underImprovementLimit = initialUnderImprovementLimit;
-		learnMethods = initialLearnMethods;
-		learningConstant = initialLearningConstant;
-		threadCount++;
+		if(threadCount<(threadLimit+1)) {
+			threadFFANN = ANNTools.createFFANN(structure);
+			desiredError = initialDesiredError;
+			improvementThreshold = initialImprovementThreshold;
+			underImprovementLimit = initialUnderImprovementLimit;
+			learnMethods = initialLearnMethods;
+			learningConstant = initialLearningConstant;
+			(new Thread(this, ("neural network"))).start();
+			threadCount++;
+		}
 	}
 	public void run() {
-		networkError = 0;
-		averageNetworkError+=networkError;
-		averageNetworkError=averageNetworkError/threadCount;
 		int currentLearnMethod = 0;
 		while(networkError>desiredError && underImprovementLimit >= 0) {
+			networkError = 0;
 			for(currentLearnMethod=0;currentLearnMethod<learnMethods.length;currentLearnMethod++) {
 				networkError+=threadFFANN.train(learnMethods[currentLearnMethod].inputs,learnMethods[currentLearnMethod].outputs,learningConstant);
+				threadGens++;
 			}
 			networkError=networkError/learnMethods.length;
 			networkImprovement = networkError-lastNetworkError;
 			lastNetworkError = networkError;
+			//System.out.println(networkImprovement);
 			if(networkImprovement<improvementThreshold) {
 				underImprovementLimit--;
+				//System.out.println("miss");
 			}
+			averageNetworkError+=networkError;
+			averageNetworkError=averageNetworkError/threadLimit;
+			averageNetworkImprovement+=networkImprovement;
+			averageNetworkImprovement=averageNetworkImprovement/threadLimit;
 		}
-		if(underImprovementLimit > 0) {
+		//System.out.println("dead.");
+		if(networkError<lowestError) {
+			lowestError = networkError;
 			lastSuccesfulWeights = threadFFANN.getWeights();
-			if(networkError<lowestError) {
-				lowestError = networkError;
-			}
 		}
 		threadCount--;
+		recycledThreads++;
+		totalGenerations+=threadGens;
 	}
 }
 
 class neuralNet {
 	public static void main(String args[]) {
+		double startTime = System.currentTimeMillis();
 		Random random = new Random();
 		int structure[] = {2,5,1}; //Overall Structure
-		//CURRENTLY LEARNING NAND GATE
+		//CURRENTLY LEARNING XOR GATE
 		learnMethod learningMethods[] = {new learnMethod(),new learnMethod(),new learnMethod(),new learnMethod()};
 		learningMethods[0].inputs = new double[2];
 		learningMethods[0].outputs = new double[1];
 		learningMethods[0].inputs[0] = 0.f;
 		learningMethods[0].inputs[1] = 0.f;
-		learningMethods[0].outputs[0] = 1.f;
+		learningMethods[0].outputs[0] = 0.f;
 		learningMethods[1].inputs = new double[2];
 		learningMethods[1].outputs = new double[1];
 		learningMethods[1].inputs[0] = 0.f;
@@ -403,43 +433,89 @@ class neuralNet {
 		for(int currentInitialWeight = 0;currentInitialWeight<learnThread.lastSuccesfulWeights.length;currentInitialWeight++) {
 			learnThread.lastSuccesfulWeights[currentInitialWeight] = (double)((random.nextDouble() * 0.7)+0.3);
 		}
-		int threadLimit = 8;
-		double desiredTotalError = 0.01;
+		learnThread.threadLimit = 16;
+		double desiredTotalError = 0.004;
 		double initialDesiredTotalError = 0.5;
-		double desiredImprovement = 0.0000001; //At least this much
-		int improvementLimit = 100; //Can miss this many times
+		double desiredImprovement = 0.000001; //At least this much
+		int improvementLimit = 5000; //Can miss this many times
 		double learningConstant = 1.f;
 		FFANN idealNetwork = ANNTools.createFFANN(structure);
-		double updateRate = 1000; //Every second
+		double updateRate = 100;
 		double curTime = System.currentTimeMillis();
 		double lastTime = System.currentTimeMillis();
-		while(learnThread.threadCount<threadLimit) {
+		System.out.println("Learning XOR Gate to error at or below " + desiredTotalError + " with " + learnThread.threadLimit + " parallel neural networks...");
+		while(learnThread.threadCount<(learnThread.threadLimit+1)) {
+			//System.out.println(learnThread.threadLimit);
 			new learnThread(learningMethods,initialDesiredTotalError,desiredImprovement,improvementLimit,learningConstant,structure);
 		}
-		while(learnThread.averageNetworkError>desiredTotalError) {
+		while(learnThread.lowestError>desiredTotalError) {
 			curTime = System.currentTimeMillis();
-			if((curTime-lastTime)>=updateRate) {
-				System.out.println("Lowest Error: " + learnThread.lowestError + " Average Error: " + learnThread.averageNetworkError);
+			if((curTime-lastTime)>=updateRate) {;
 				lastTime=curTime;
-				//System.out.println(idealNetwork.isInitializedCorrectly());
-				idealNetwork.setWeights(learnThread.lastSuccesfulWeights);
-				double outputs[];
-				String outStr = "";
-				for(int currentMethod = 0;currentMethod<learningMethods.length;currentMethod++) {
-					outputs = idealNetwork.forwardPass(learningMethods[currentMethod].inputs);
-					for(int currentOut = 0;currentOut<outputs.length;currentOut++) {
-						outStr=("IN: ");
-						for(int currentInput = 0;currentInput<learningMethods[currentMethod].inputs.length;currentInput++) {
-							outStr+=(learningMethods[currentMethod].inputs[currentInput]+" ");
-						}
-						outStr+=("OUT: " + outputs[currentOut]);
-						System.out.println(outStr);
-					}
-				}
+				//Update here if wished.
 			}
-			while(learnThread.threadCount<threadLimit) {
+			if(idealNetwork.getWeights() != learnThread.lastSuccesfulWeights) {
+				idealNetwork.setWeights(learnThread.lastSuccesfulWeights);
+			}
+			while(learnThread.threadCount<(learnThread.threadLimit+1)) {
 				new learnThread(learningMethods,learnThread.averageNetworkError,desiredImprovement,improvementLimit,learningConstant,structure);
 			}
+		}
+		System.out.println("Learned XOR Gate with error of " + learnThread.lowestError + " useing " + learnThread.threadLimit + " parallel feed foreward neural networks in " + ((System.currentTimeMillis()-startTime)/1000) + " seconds!");
+		System.out.println("Recycled neural networks: " + learnThread.recycledThreads);
+		System.out.println("Total generations: " + learnThread.totalGenerations);
+		System.out.println("Ideal network structure:");
+		System.out.println(" Layers:");
+		for(int cl = 0;cl<structure.length;cl++) {
+			if(cl == 0) {
+				System.out.println("  Input layer: " + structure[cl] + " neurons");
+			} else if (cl == (structure.length-1)) {
+				System.out.println("  Output layer: " + structure[cl] + " neurons");
+			} else {
+				System.out.println("  Hidden layer " + cl + ": " + structure[cl] + " neurons");
+			}
+		}
+		double clb[] = idealNetwork.getBiasValues();
+		System.out.println(" Bias values:");
+		for(int cb = 0;cb<clb.length;cb++) {
+			System.out.println("  Bias " + cb + ": " + clb[cb]);
+		}
+		System.out.println(" Weights:");
+		double clw[] = idealNetwork.getWeights();
+		for(int cw = 0;cw<clw.length;cw++) {
+			System.out.println("  Weight " + cw + ": " + clw[cw]);
+		}
+		System.out.println("Performance:");
+		String inputsString = "";
+		String outputsString = "";
+		double tTime = 0;
+		double sTime = 0;
+		double fTime = 0;
+		double outputValues[];
+		int curInpt = 0;
+		int curOut = 0;
+		for(int curLearn = 0;curLearn<learningMethods.length;curLearn++) {
+			inputsString = "";
+			for(curInpt = 0;curInpt<learningMethods[curLearn].inputs.length;curInpt++) {
+				inputsString+=learningMethods[curLearn].inputs[curInpt];
+				if(curInpt != (learningMethods[curLearn].inputs.length-1)) {
+					inputsString+=",";
+				}
+			}
+			System.out.println(" Inputs: " + inputsString);
+			sTime = System.currentTimeMillis();
+			outputValues = idealNetwork.forwardPass(learningMethods[curLearn].inputs);
+			fTime = System.currentTimeMillis();
+			tTime = fTime-sTime;
+			outputsString = "";
+			for(curOut = 0;curOut<outputValues.length;curOut++) {
+				outputsString+=outputValues[curOut];
+				if(curOut != (outputValues.length-1)) {
+					outputsString+=",";
+				}
+			}
+			System.out.println(" Outputs: " + outputsString);
+			System.out.println(" Run time: " + (tTime/1000) + " seconds");
 		}
 		//OLD CODE:
 		/*
