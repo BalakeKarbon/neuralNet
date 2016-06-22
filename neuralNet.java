@@ -1,3 +1,10 @@
+import java.io.*;
+import java.io.File.*;
+import java.util.*;
+import javax.swing.*;
+import javax.swing.event.*;
+import java.awt.event.*;
+import java.awt.*;
 import java.util.Random;
 import java.util.Arrays;
 //NOTE:The above imports are not for the ANN itself.
@@ -394,34 +401,312 @@ class learnThread implements Runnable {
 		totalGenerations+=threadGens;
 	}
 }
-
+class paintPanel extends JPanel implements ComponentListener,MouseListener,MouseMotionListener {
+	public int width,height;
+	public int pixelWidth,pixelHeight;
+	public boolean drawing = false;
+	public int[][] pixelArray;
+	public int arrayX = 0;
+	public int arrayY = 0;
+	public int lastX = arrayX;
+	public int lastY = arrayY;
+	public boolean getDrawing = false;
+	public double timeOfRelease = System.currentTimeMillis();
+	public boolean isReady = false;
+	public int resX = 0;
+	public int resY = 0;
+	public int curX,curY;
+	public int curX2,curY2;
+	public int missingPointsX,missingPointsY,missingPoints;
+	public int curMPoint;
+	public int tmpx = 0;
+	public int tmpy = 0;
+	public int tmpSlp=0;
+	public boolean RMB = false;
+	paintPanel(int rx,int ry) {
+		resX = rx;
+		resY = ry;
+		width = getSize().width;
+		height = getSize().height;
+		pixelArray = new int[resX][resY];
+		addComponentListener(this);
+		pixelWidth = getSize().width/resX;
+		pixelHeight = getSize().height/resY;
+		addMouseListener(this);
+		addMouseMotionListener(this);
+	}
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+        isReady = true;
+		g.clearRect(0,0,width,height);
+		for(curX = 0;curX<pixelArray.length;curX++) {
+			for(curY = 0;curY<pixelArray[curX].length;curY++) {
+				if(pixelArray[curX][curY] == 1) {
+					g.setColor(Color.black);
+				} else {
+					g.setColor(Color.white);
+				}
+				g.fillRect((curX*pixelWidth),(curY*pixelHeight),(pixelWidth),(pixelHeight));
+			}
+		}
+	}
+	public void componentResized(ComponentEvent evt) {
+		pixelWidth = getSize().width/resX;
+		pixelHeight = getSize().height/resY;
+		width = getSize().width;
+		height = getSize().height;
+    }
+    public void mousePressed(MouseEvent evt) {
+		if(evt.getButton() == MouseEvent.BUTTON1) {
+			RMB = true;
+		}
+	}
+	public void mouseReleased(MouseEvent evt) {
+		if(evt.getButton() == MouseEvent.BUTTON1) {
+			RMB = false;
+		}
+		timeOfRelease = System.currentTimeMillis();
+	}
+	public void mouseMoved(MouseEvent evt) {
+		arrayX = (int)(evt.getX()/pixelWidth);
+		arrayY = (int)(evt.getY()/pixelHeight);
+	}
+	public void componentHidden(ComponentEvent evt) {
+		
+	}
+	public void componentMoved(ComponentEvent evt) {
+		
+	}
+	public void componentShown(ComponentEvent evt) {
+		
+	}
+	public void mouseEntered(MouseEvent evt) {
+		
+	}
+	public void mouseExited(MouseEvent evt) {
+		
+	}
+	public void mouseClicked(MouseEvent evt) {
+		
+	}
+	public void mouseDragged(MouseEvent evt) {
+		arrayX = (int)(evt.getX()/pixelWidth);
+		arrayY = (int)(evt.getY()/pixelHeight);
+		if(arrayX <= pixelArray.length) {
+			if(arrayY <= pixelArray[arrayX].length) {
+				if(RMB) {
+					pixelArray[arrayX][arrayY] = 1;
+					if(arrayX+1<pixelArray.length) {
+						pixelArray[arrayX+1][arrayY] = pixelArray[arrayX][arrayY];
+					}
+					if(arrayX-1>=0) {
+						pixelArray[arrayX-1][arrayY] = pixelArray[arrayX][arrayY];
+					}
+					if(arrayY+1<pixelArray[arrayX].length) {
+						pixelArray[arrayX][arrayY+1] = pixelArray[arrayX][arrayY];
+					}
+					if(arrayY-1>=0) {
+						pixelArray[arrayX][arrayY-1] = pixelArray[arrayX][arrayY];
+					}
+				} else {
+					pixelArray[arrayX][arrayY] = 0;
+					if(arrayX+1<pixelArray.length) {
+						pixelArray[arrayX+1][arrayY] = pixelArray[arrayX][arrayY];
+					}
+					if(arrayX-1>=0) {
+						pixelArray[arrayX-1][arrayY] = pixelArray[arrayX][arrayY];
+					}
+					if(arrayY+1<pixelArray[arrayX].length) {
+						pixelArray[arrayX][arrayY+1] = pixelArray[arrayX][arrayY];
+					}
+					if(arrayY-1>=0) {
+						pixelArray[arrayX][arrayY-1] = pixelArray[arrayX][arrayY];
+					}
+				}
+				lastX = arrayX;
+				lastY = arrayY;
+			}
+		}
+	}
+	public void clear() {
+		for(curX2 = 0;curX2<pixelArray.length;curX2++) {
+			for(curY2 = 0;curY2<pixelArray[curX2].length;curY2++) {
+				pixelArray[curX2][curY2] = 0;
+			}
+		}
+		lastX = 0;
+		lastY = 0;
+	}
+}
 class neuralNet {
+	public static paintPanel drawingSurface;
+	public static String dataFolder;
+	public static File dataDir;
+	public static boolean saveCharacters(learnMethod inputChars[]) {
+		RandomAccessFile file;
+		int curInput = 0;
+		int curIteration = 0;
+		char nameChar;
+		int offset;
+		char lastNameChar = '\0';
+		String filePaths[];
+		int curFile;
+		for(int curChar = 0;curChar<inputChars.length;curChar++) {
+			nameChar = Character.toChars((int)(inputChars[curChar].outputs[0]))[0];
+			if(nameChar == lastNameChar) {
+				curIteration++;
+			} else {
+				curIteration = 0;
+			}
+			lastNameChar = nameChar;
+			dataDir=new File(dataFolder);
+			filePaths = dataDir.list();
+			offset = 0;
+			for(curFile = 0;curFile<filePaths.length;curFile++) {
+				if(filePaths[curFile].contains(String.valueOf(nameChar))) {
+					offset++;
+				}
+			}
+			try{
+				file = new RandomAccessFile(dataFolder+Character.toChars((int)(inputChars[curChar].outputs[0]))[0]+"-"+(curIteration+offset),"rw");
+				for(curInput = 0;curInput<1024;curInput++) {
+					file.writeDouble(inputChars[curChar].inputs[curInput]);
+					//file.write('\n');
+				}
+				file.close();
+			} catch (Exception e) {
+				System.out.println("Error writing "+dataFolder+Character.toChars((int)(inputChars[curChar].outputs[0]))[0]+(curIteration+offset));
+				System.out.println(e.getMessage());
+			}
+		}
+		return true;
+	}
+	public static boolean closingWindow = false;
+	public static learnMethod[] getCharacters() {
+		char characters[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
+		int iterationsPerCharacter = 2;
+		learnMethod newMethods[] = new learnMethod[iterationsPerCharacter*characters.length];
+		JFrame learningWindow = new JFrame("Learning Window");
+		learningWindow.setSize(300,300);
+		learningWindow.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		WindowListener closeOperation = new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				if(!closingWindow) {
+					int closeOption = JOptionPane.showOptionDialog(null, "Are you sure you would like to stop the neural network?","Close Confirmation", JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE, null, null, null);;
+					if(closeOption == 0) {
+						System.exit(0);
+						return;
+					}
+				}
+			}
+		};
+		learningWindow.addWindowListener(closeOperation);
+		JPanel mainPanel = new JPanel();
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+		drawingSurface = new paintPanel(32,32);
+		mainPanel.add(drawingSurface);
+		JPanel inputPanel = new JPanel();
+		inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.X_AXIS));
+		JButton clearButton = new JButton("Clear");
+		clearButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				drawingSurface.clear();
+			}
+		});
+		JButton sendButton = new JButton("Submit");
+		sendButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				drawingSurface.getDrawing=true;
+				drawingSurface.clear();
+			}
+		});
+		inputPanel.add(clearButton);
+		inputPanel.add(sendButton);
+		mainPanel.add(inputPanel);
+		JLabel characterLabel = new JLabel("Character to draw:" + characters[0] + " (1/" + iterationsPerCharacter + ")"); 
+		mainPanel.add(characterLabel);
+		learningWindow.add(mainPanel);
+		learningWindow.setVisible(true);
+		int currentMethod = 0;
+		int curX = 0;
+		int curY = 0;
+		int currentIteration = 1;
+		char currentCharacter = characters[0];
+		while(currentMethod<newMethods.length) {
+			drawingSurface.repaint();
+			if(drawingSurface.isReady) {
+				if(drawingSurface.getDrawing==true) {
+					currentCharacter = characters[(int)((currentMethod)/iterationsPerCharacter)];
+					newMethods[currentMethod] = new learnMethod();
+					newMethods[currentMethod].inputs = new double[1024];
+					newMethods[currentMethod].outputs = new double[1];
+					newMethods[currentMethod].outputs[0] = (double)((int)currentCharacter);
+					drawingSurface.getDrawing=false;
+					for(curX = 0;curX<drawingSurface.pixelArray.length;curX++) {
+						for(curY = 0;curY<drawingSurface.pixelArray[curX].length;curY++) {
+							newMethods[currentMethod].inputs[(curX*drawingSurface.pixelArray.length)+curY] = drawingSurface.pixelArray[curX][curY];
+						}
+					}
+					currentMethod++;
+					if(currentMethod<characters.length) {
+						characterLabel.setText("Character to draw:" + characters[((int)((currentMethod)/iterationsPerCharacter))] + " (" + (currentIteration+1) + "/" + (iterationsPerCharacter) + ")");
+					} else {
+						characterLabel.setText("Character to draw:" + characters[((int)((currentMethod)/iterationsPerCharacter))-1] + " (" + (currentIteration+1) + "/" + (iterationsPerCharacter) + ")");
+					}
+					currentIteration++;
+					if(currentIteration >= iterationsPerCharacter) {
+						currentIteration = 0;
+					}				
+				}
+			}
+		}
+		learningWindow.dispose();
+		closingWindow=true;
+		learningWindow.dispatchEvent(new WindowEvent(learningWindow, WindowEvent.WINDOW_CLOSING));
+		saveCharacters(newMethods);
+		return getCharactersFromFolder(dataFolder);
+	}
+	public static learnMethod[] getCharactersFromFolder(String folderName) {
+		dataDir=new File(dataFolder);
+		String filePaths[] = dataDir.list();
+		RandomAccessFile file;
+		int curLine = 0;
+		learnMethod newMethods[] = new learnMethod[filePaths.length];
+		for(int curMethod = 0;curMethod<newMethods.length;curMethod++) {
+			System.out.println("Loading "+dataFolder+filePaths[curMethod]+"...");
+			newMethods[curMethod] = new learnMethod();
+			newMethods[curMethod].outputs = new double[1];
+			newMethods[curMethod].inputs = new double[1024];
+			newMethods[curMethod].outputs[0] = filePaths[curMethod].charAt(0);
+			try {
+				file = new RandomAccessFile(dataFolder+filePaths[curMethod],"r");
+				for(curLine = 0;curLine<1024;curLine++) {
+					newMethods[curMethod].inputs[curLine] = file.readDouble();
+				}
+				file.close();
+			} catch (Exception e) {
+				System.out.println("Error reading "+dataFolder+filePaths[curMethod]+"...");
+				System.out.println(e.getMessage());
+			}
+		}
+		return newMethods;
+	}
 	public static void main(String args[]) {
 		double startTime = System.currentTimeMillis();
+		if(System.getProperty("os.name").contains("Windows")) {
+			dataFolder = "data\\";
+		} else {
+			dataFolder = "data/";
+		}
 		Random random = new Random();
-		int structure[] = {2,5,1}; //Overall Structure
-		//CURRENTLY LEARNING NAND GATE
-		learnMethod learningMethods[] = {new learnMethod(),new learnMethod(),new learnMethod(),new learnMethod()};
-		learningMethods[0].inputs = new double[2];
-		learningMethods[0].outputs = new double[1];
-		learningMethods[0].inputs[0] = 0.f;
-		learningMethods[0].inputs[1] = 0.f;
-		learningMethods[0].outputs[0] = 1.f;
-		learningMethods[1].inputs = new double[2];
-		learningMethods[1].outputs = new double[1];
-		learningMethods[1].inputs[0] = 0.f;
-		learningMethods[1].inputs[1] = 1.f;
-		learningMethods[1].outputs[0] = 1.f;
-		learningMethods[2].inputs = new double[2];
-		learningMethods[2].outputs = new double[1];
-		learningMethods[2].inputs[0] = 1.f;
-		learningMethods[2].inputs[1] = 0.f;
-		learningMethods[2].outputs[0] = 1.f;
-		learningMethods[3].inputs = new double[2];
-		learningMethods[3].outputs = new double[1];
-		learningMethods[3].inputs[0] = 1.f;
-		learningMethods[3].inputs[1] = 1.f;
-		learningMethods[3].outputs[0] = 0.f;
+		int structure[] = {1024,1280,1280,1280,1280,1280,1}; //Overall Structure
+		//CURRENTLY LEARNING CHARACTER RECOGNITION
+		System.out.println("Getting learning methods...");
+		learnMethod learningMethods[] = getCharacters();
+		
+		//NOTE: Add option to add initial weights to start from last learning session?
 		int weightCount = 0;
 		for(int currentLayer = 0;currentLayer<structure.length;currentLayer++) {
 			if(currentLayer>0) {
@@ -433,9 +718,9 @@ class neuralNet {
 		for(int currentInitialWeight = 0;currentInitialWeight<learnThread.lastSuccesfulWeights.length;currentInitialWeight++) {
 			learnThread.lastSuccesfulWeights[currentInitialWeight] = (double)((random.nextDouble() * 0.7)+0.3);
 		}
-		learnThread.threadLimit = 16;
-		double desiredTotalError = 0.004;
-		double initialDesiredTotalError = 0.5;
+		learnThread.threadLimit = 4;
+		double desiredTotalError = 0.1;
+		double initialDesiredTotalError = 0.9;
 		double desiredImprovement = 0.000001; //At least this much
 		int improvementLimit = 5000; //Can miss this many times
 		double learningConstant = 1.f;
@@ -443,7 +728,7 @@ class neuralNet {
 		double updateRate = 100;
 		double curTime = System.currentTimeMillis();
 		double lastTime = System.currentTimeMillis();
-		System.out.println("Learning NAND Gate to error at or below " + desiredTotalError + " with " + learnThread.threadLimit + " parallel neural networks...");
+		System.out.println("Learning CHARACTER RECOGNITION to error at or below " + desiredTotalError + " with " + learnThread.threadLimit + " parallel neural networks...");
 		while(learnThread.threadCount<(learnThread.threadLimit+1)) {
 			//System.out.println(learnThread.threadLimit);
 			new learnThread(learningMethods,initialDesiredTotalError,desiredImprovement,improvementLimit,learningConstant,structure);
@@ -456,12 +741,13 @@ class neuralNet {
 			}
 			if(idealNetwork.getWeights() != learnThread.lastSuccesfulWeights) {
 				idealNetwork.setWeights(learnThread.lastSuccesfulWeights);
+				//Or update here.
 			}
 			while(learnThread.threadCount<(learnThread.threadLimit+1)) {
 				new learnThread(learningMethods,learnThread.averageNetworkError,desiredImprovement,improvementLimit,learningConstant,structure);
 			}
 		}
-		System.out.println("Learned NAND Gate with error of " + learnThread.lowestError + " useing " + learnThread.threadLimit + " parallel feed foreward neural networks in " + ((System.currentTimeMillis()-startTime)/1000) + " seconds!");
+		System.out.println("Learned CHARACTER RECOGNITION with error of " + learnThread.lowestError + " useing " + learnThread.threadLimit + " parallel feed foreward neural networks in " + ((System.currentTimeMillis()-startTime)/1000) + " seconds!");
 		System.out.println("Recycled neural networks: " + learnThread.recycledThreads);
 		System.out.println("Total generations: " + learnThread.totalGenerations);
 		System.out.println("Ideal network structure:");
@@ -517,122 +803,5 @@ class neuralNet {
 			System.out.println(" Outputs: " + outputsString);
 			System.out.println(" Run time: " + (tTime/1000) + " seconds");
 		}
-		//OLD CODE:
-		/*
-		Random random = new Random();
-		//Generate and output nerual network structure.
-		//Structure:
-		int mahStructure[] = {2,5,5,1};
-		int mahWeightCount = 0;
-		System.out.println("Neural Network Structure:");
-		for(int currentMahLayer = 0;currentMahLayer<mahStructure.length;currentMahLayer++) {
-			if(currentMahLayer>0) {
-				mahWeightCount+=(mahStructure[currentMahLayer]*mahStructure[currentMahLayer-1]);
-			}
-			System.out.println(" Layer " + (currentMahLayer+1) + ":");
-			if(currentMahLayer == 0) {
-				System.out.println("  Type: Input");
-				System.out.println("   Neuron Count: " + mahStructure[currentMahLayer]);
-			} else if(currentMahLayer == (mahStructure.length-1)) {
-				System.out.println("  Type: Output");
-				System.out.println("   Neuron Count: " + mahStructure[currentMahLayer]);
-			} else {
-				System.out.println("  Type: Hidden");
-				System.out.println("   Neuron Count: " + mahStructure[currentMahLayer]);
-			}
-		}
-		//Weights:
-		double mahInitialWeights[] = new double[mahWeightCount]; //EX:2 * 5 for first layer, 5 * 5 for second, 5 * 1 for last. {2,5,5,1}
-		System.out.println(" Weights:");
-		for(int currentInitialWeight = 0;currentInitialWeight<mahInitialWeights.length;currentInitialWeight++) {
-			mahInitialWeights[currentInitialWeight] = (double)((random.nextDouble() * 0.5)+0.5);
-			System.out.println("  w" + (currentInitialWeight+1) + ": " + mahInitialWeights[currentInitialWeight]);
-		}
-		//Bias Values:
-		double mahBiasValues[] = {1.f,1.f,1.f};
-		System.out.println(" Bias Values:");
-		for(int currentBiasValue = 0;currentBiasValue<mahBiasValues.length;currentBiasValue++) {
-			System.out.println("  Layer " + (currentBiasValue+1) + " bias value: " + mahBiasValues[currentBiasValue]);
-		}
-		//Create Neural Network.
-		FFANN mahANN = new FFANN(mahStructure, mahBiasValues, mahInitialWeights);
-		//Make sure the nerual network initialized without any errors.
-		if(mahANN.isInitializedCorrectly()) {
-			System.out.println("\nThe ANN initialized correctly!");
-			double mahLearningConstant = 0.1;
-			double annInputs[] = new double[2];
-			double annDesiredOutputs[] = new double[1];
-			double mahTotalError = 1;
-			long mahTrains = 0;
-			long currentTime = System.currentTimeMillis();
-			long lastTime = System.currentTimeMillis();
-			long startTime = currentTime;
-			double lastError = 1;
-			double requiredError = 0.01;
-			System.out.println("Starting training for XOR gate...");
-			while(mahTotalError>requiredError) {
-				mahTrains++;
-				mahTotalError = 0;
-				annInputs[0] = 0.f;
-				annInputs[1] = 0.f;
-				annDesiredOutputs[0] = 0.f;
-				mahTotalError+=mahANN.train(annInputs,annDesiredOutputs,mahLearningConstant);
-				annInputs[0] = 1.f;
-				annInputs[1] = 0.f;
-				annDesiredOutputs[0] = 1.f;
-				mahTotalError+=mahANN.train(annInputs,annDesiredOutputs,mahLearningConstant);
-				annInputs[0] = 0.f;
-				annInputs[1] = 1.f;
-				annDesiredOutputs[0] = 1.f;
-				mahTotalError+=mahANN.train(annInputs,annDesiredOutputs,mahLearningConstant);
-				annInputs[0] = 1.f;
-				annInputs[1] = 1.f;
-				annDesiredOutputs[0] = 0.f;
-				mahTotalError+=mahANN.train(annInputs,annDesiredOutputs,mahLearningConstant);
-				mahTotalError=mahTotalError/4;
-				currentTime = System.currentTimeMillis();
-				if((currentTime-lastTime)>=1000) {
-					lastTime = currentTime;
-					System.out.println("Generation " + mahTrains + ":");
-					System.out.println(" Total Error:" + mahTotalError);
-					System.out.println(" New Weights:");
-					for(int mahCurWeight = 0;mahCurWeight<mahANN.getWeights().length;mahCurWeight++) {
-						System.out.println("  w"+mahCurWeight+": "+mahANN.getWeights()[mahCurWeight]);
-					}
-					System.out.println(" Improvement:" + (lastError-mahTotalError));
-					lastError=mahTotalError;
-				}
-			}
-			System.out.println("Generation " + mahTrains + ":");
-			System.out.println(" Total Error:" + mahTotalError);
-			System.out.println(" New Weights:");
-			for(int mahCurWeight = 0;mahCurWeight<mahANN.getWeights().length;mahCurWeight++) {
-				System.out.println("  w"+mahCurWeight+": "+mahANN.getWeights()[mahCurWeight]);
-			}
-			System.out.println(" Improvement: " + (lastError-mahTotalError));
-			long totalElapsedTime = (System.currentTimeMillis()-startTime);
-			System.out.println("Total elapsed time: " + totalElapsedTime + " milliseconds.");
-			double output[];
-			double inputs[] = {0.f,0.f};
-			output = mahANN.forwardPass(inputs);
-			System.out.println("In: 0,0 Out: " + Math.round(output[0]));
-			inputs[0] = 0.f;
-			inputs[1] = 1.f;
-			output = mahANN.forwardPass(inputs);
-			System.out.println("In: 0,1 Out: " + Math.round(output[0]));
-			inputs[0] = 1.f;
-			inputs[1] = 0.f;
-			output = mahANN.forwardPass(inputs);
-			System.out.println("In: 1,0 Out: " + Math.round(output[0]));
-			inputs[0] = 1.f;
-			inputs[1] = 1.f;
-			output = mahANN.forwardPass(inputs);
-			System.out.println("In: 1,1 Out: " + Math.round(output[0]));
-		} else {
-			mahANN = null;
-			System.gc(); //Call the garbage collector.
-			System.out.println("The ANN did not initialize correctly... Make sure to check that there are enough nodes to support an ANN and that there is a bias set for each hidden and output layer.");
-		} 
-		*/
 	}
 }
